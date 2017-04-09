@@ -1,0 +1,21 @@
+name: Mr_World
+main: xyz.mrsky.mr_world.Mr_World
+version: "1.0.2"
+api: ["1.0.0"]
+load: POSTWORLD
+author: Mr_sky
+description: 多世界插件测试版
+
+commands:
+  w:
+    description: Mr_World传送命令
+  load:
+    description: Mr_World加载地图命令
+  unload:
+    description: Mr_World卸载地图命令
+  lw:
+    description: Mr_World世界列表命令
+  new:
+    description: Mr_World新建世界命令
+  wp:
+    description: Mr_World世界保护命令
