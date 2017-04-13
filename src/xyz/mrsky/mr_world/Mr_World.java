@@ -9,6 +9,8 @@ import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
+import cn.nukkit.event.player.PlayerInteractEvent;
+import cn.nukkit.event.player.PlayerItemHeldEvent;
 import cn.nukkit.plugin.PluginBase;
 import java.io.File;
 import java.util.Arrays;
@@ -47,7 +49,6 @@ public class Mr_World extends PluginBase implements Listener {
     public void onDisable() {
         this.getLogger().info("插件正在关闭");
     }
-
     public boolean onCommand(CommandSender sender, Command command, String zhiling, String[] liebiao) {
         if(zhiling.equals("w")) {
             if(liebiao.length < 1) {
@@ -60,13 +61,15 @@ public class Mr_World extends PluginBase implements Listener {
                 sender.sendMessage(tpTipReplace);
                 return true;
             } else {
-                String
-                sender.sendMessage("世界[" + liebiao[0] + "]不存在");
+                String noWorld = this.getConfig().get("世界不存在提示信息").toString();
+                String ahaha = noWorld.replace("{world}",liebiao[0]);
+                sender.sendMessage(ahaha);
                 return false;
             }
         } else if(zhiling.equals("load")) {
             if(!sender.isOp()) {
-                sender.sendMessage("不是OP请一边凉快去");
+                String var1 = this.getConfig().get("不是OP提示信息").toString();
+                sender.sendMessage(var1);
                 return false;
             } else if(liebiao.length < 1) {
                 sender.sendMessage("请使用/load <世界名> 以加载世界");
@@ -82,7 +85,8 @@ public class Mr_World extends PluginBase implements Listener {
             }
         } else if(zhiling.equals("unload")) {
             if(!sender.isOp()) {
-                sender.sendMessage("不是OP请一边凉快去");
+                String var1 = this.getConfig().get("不是OP提示信息").toString();
+                sender.sendMessage(var1);
                 return false;
             } else if(liebiao.length < 1) {
                 sender.sendMessage("请使用/unload <世界名> 以卸载世界");
@@ -104,7 +108,8 @@ public class Mr_World extends PluginBase implements Listener {
         } else {
             if(zhiling.equals("new")) {
                 if(!sender.isOp()) {
-                    sender.sendMessage("不是OP请一边凉快去");
+                    String var1 = this.getConfig().get("不是OP提示信息").toString();
+                    sender.sendMessage(var1);
                     return false;
                 }
 
@@ -128,7 +133,8 @@ public class Mr_World extends PluginBase implements Listener {
 
             if(zhiling.equals("wp")) {
                 if(!sender.isOp()) {
-                    sender.sendMessage("不是OP请一边凉快去");
+                    String var1 = this.getConfig().get("不是OP提示信息").toString();
+                    sender.sendMessage(var1);
                     return false;
                 }
 
@@ -139,17 +145,20 @@ public class Mr_World extends PluginBase implements Listener {
 
                 List worldPVPList;
                 if(liebiao[0].equals("admin")) {
+                    if(!sender.isOp()) {
+                        String var1 = this.getConfig().get("不是OP提示信息").toString();
+                        sender.sendMessage(var1);
+                        return false;
+                    }
                     if(liebiao.length < 1) {
                         sender.sendMessage("请使用/wp admin <add/del> <玩家名> 以添加世界保护白名单");
                         return false;
                     }
-
                     if(liebiao[1].equals("add")) {
                         if(liebiao.length < 2) {
                             sender.sendMessage("请使用/wp admin add <玩家名> 以添加世界保护白名单");
                             return false;
                         }
-
                         worldPVPList = this.getConfig().getStringList("世界保护白名单");
                         worldPVPList.add(liebiao[2]);
                         this.getConfig().set("世界保护白名单", worldPVPList);
@@ -172,30 +181,31 @@ public class Mr_World extends PluginBase implements Listener {
                 }
 
                 if(liebiao[0].equals("world")) {
+                    if(!sender.isOp()) {
+                        String var1 = this.getConfig().get("不是OP提示信息").toString();
+                        sender.sendMessage(var1);
+                        return false;
+                    }
                     if(liebiao.length < 1) {
                         sender.sendMessage("请使用/wp world <add/del> <world> 以添加世界保护列表");
                         return false;
                     }
-
                     if(liebiao[1].equals("add")) {
                         if(liebiao.length < 2) {
                             sender.sendMessage("请使用/wp world add <world> 以调整世界保护列表");
                             return false;
                         }
-
                         worldPVPList = this.getConfig().getStringList("世界保护列表");
                         worldPVPList.add(liebiao[2]);
                         this.getConfig().set("世界保护白名单", worldPVPList);
                         this.getConfig().save();
                         sender.sendMessage("添加保护世界[" + liebiao[2] + "]完成");
                     }
-
                     if(liebiao[1].equals("del")) {
                         if(liebiao.length < 2) {
                             sender.sendMessage("请使用/wp world del <world> 以调整世界保护列表");
                             return false;
                         }
-
                         worldPVPList = this.getConfig().getStringList("世界保护列表");
                         worldPVPList.remove(liebiao[2]);
                         this.getConfig().set("世界保护白名单", worldPVPList);
@@ -205,17 +215,20 @@ public class Mr_World extends PluginBase implements Listener {
                 }
 
                 if(zhiling.equals("pvp")) {
+                    if(!sender.isOp()) {
+                        String var1 = this.getConfig().get("不是OP提示信息").toString();
+                        sender.sendMessage(var1);
+                        return false;
+                    }
                     if(liebiao.length < 1) {
                         sender.sendMessage("请使用/wp pvp <add/del> <world> 以调整PVP世界保护列表");
                         return false;
                     }
-
                     if(liebiao[1].equals("add")) {
                         if(liebiao.length < 2) {
                             sender.sendMessage("请使用/wp pvp add <world> 以添加PVP世界保护");
                             return false;
                         }
-
                         worldPVPList = this.getConfig().getStringList("PVP世界保护列表");
                         worldPVPList.add(liebiao[2]);
                         this.getConfig().set("PVP世界保护列表", worldPVPList);
@@ -257,7 +270,7 @@ public class Mr_World extends PluginBase implements Listener {
     public void onPlayerUseItem(BlockPlaceEvent event) {
         List worldProtectList = this.getConfig().getStringList("世界保护列表");
         List worldAdminList = this.getConfig().getStringList("世界保护白名单");
-        if(worldProtectList.contains(event.getPlayer().getLevel().getName()) && !worldAdminList.contains(event.getPlayer().getName().tolow)) {
+        if(worldProtectList.contains(event.getPlayer().getLevel().getName()) && !worldAdminList.contains(event.getPlayer().getName())) {
             event.getPlayer().sendMessage(this.getConfig().get("世界保护提示信息").toString());
             event.setCancelled(true);
         }
