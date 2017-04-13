@@ -9,5 +9,5 @@ it will be more perfect
 ---------------------------------------------
 如果有些许疑问，请加QQ群612534359联系群主
 ---------------------------------------------
-if you huve some Doubt ,you can join the qq group 612534359 and Contact Master of group
+if you huve some Doubt ,you can join the qq group 612534359 and Contact the Master of group
 ---------------------------------------------
