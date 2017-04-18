@@ -1,10 +1,10 @@
 name: Mr_World
 main: xyz.mrsky.mr_world.Mr_World
-version: "1.0.2"
+version: "1.0.4"
 api: ["1.0.0"]
 load: POSTWORLD
 author: Mr_sky
-description: 多世界插件测试版
+description: 多世界插件
 
 commands:
   w:

@@ -11,17 +11,18 @@ import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import cn.nukkit.event.player.PlayerItemHeldEvent;
+import cn.nukkit.event.player.PlayerJoinEvent;
 import cn.nukkit.plugin.PluginBase;
+import jdk.nashorn.internal.runtime.regexp.joni.ast.BackRefNode;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 public class Mr_World extends PluginBase implements Listener {
     private List list;
-
     public Mr_World() {
     }
-
     public void onEnable() {
         this.saveResource("config.yml");
         this.getServer().getPluginManager().registerEvents(this, this);
@@ -31,7 +32,6 @@ public class Mr_World extends PluginBase implements Listener {
         this.list = Arrays.asList(diao);
         this.LoadWorld();
     }
-
     public void LoadWorld() {
         String worldlist = "";
         try {
@@ -130,129 +130,131 @@ public class Mr_World extends PluginBase implements Listener {
                     return false;
                 }
             }
-
+/*
+* ////////////////////////////////////////////////////
+* //////////////////世界保护功能 ///////////////////////
+* ////////////////world protect///////////////////////
+* ////////////////////////////////////////////////////
+* */
             if(zhiling.equals("wp")) {
-                if(!sender.isOp()) {
-                    String var1 = this.getConfig().get("不是OP提示信息").toString();
-                    sender.sendMessage(var1);
-                    return false;
-                }
-
-                if(liebiao.length < 1) {
-                    sender.sendMessage("请使用/wp admin <add/del> <玩家名> 以添加世界保护白名单");
-                    return false;
-                }
-
-                List worldPVPList;
-                if(liebiao[0].equals("admin")) {
-                    if(!sender.isOp()) {
-                        String var1 = this.getConfig().get("不是OP提示信息").toString();
-                        sender.sendMessage(var1);
-                        return false;
-                    }
-                    if(liebiao.length < 1) {
-                        sender.sendMessage("请使用/wp admin <add/del> <玩家名> 以添加世界保护白名单");
-                        return false;
-                    }
-                    if(liebiao[1].equals("add")) {
-                        if(liebiao.length < 2) {
-                            sender.sendMessage("请使用/wp admin add <玩家名> 以添加世界保护白名单");
+                switch(liebiao[0]){
+                    case"admin":
+                        if(!sender.isOp()) {
+                            String var1 = this.getConfig().get("不是OP提示信息").toString();
+                            sender.sendMessage(var1);
                             return false;
                         }
-                        worldPVPList = this.getConfig().getStringList("世界保护白名单");
-                        worldPVPList.add(liebiao[2]);
-                        this.getConfig().set("世界保护白名单", worldPVPList);
-                        this.getConfig().save();
-                        sender.sendMessage("添加管理员[" + liebiao[2] + "]完成");
-                    }
-
-                    if(liebiao[1].equals("del")) {
-                        if(liebiao.length < 2) {
-                            sender.sendMessage("请使用/wp admin del <玩家名> 以删除世界保护白名单");
+                        if(liebiao.length < 1) {
+                            sender.sendMessage("请使用/wp admin <add/del> <玩家名> 以添加世界保护白名单");
                             return false;
                         }
-
-                        worldPVPList = this.getConfig().getStringList("世界保护白名单");
-                        worldPVPList.remove(liebiao[2]);
-                        this.getConfig().set("世界保护白名单", worldPVPList);
-                        this.getConfig().save();
-                        sender.sendMessage("删除管理员[" + liebiao[2] + "]完成");
-                    }
-                }
-
-                if(liebiao[0].equals("world")) {
-                    if(!sender.isOp()) {
-                        String var1 = this.getConfig().get("不是OP提示信息").toString();
-                        sender.sendMessage(var1);
-                        return false;
-                    }
-                    if(liebiao.length < 1) {
-                        sender.sendMessage("请使用/wp world <add/del> <world> 以添加世界保护列表");
-                        return false;
-                    }
-                    if(liebiao[1].equals("add")) {
-                        if(liebiao.length < 2) {
-                            sender.sendMessage("请使用/wp world add <world> 以调整世界保护列表");
+                        List worldPVPList;
+                        switch (liebiao[1]){
+                            case"add":
+                                if(liebiao.length < 2) {
+                                    sender.sendMessage("请使用/wp admin add <玩家名> 以添加世界保护白名单");
+                                    return false;
+                                }
+                                worldPVPList = this.getConfig().getStringList("世界保护白名单");
+                                worldPVPList.add(liebiao[2]);
+                                this.getConfig().set("世界保护白名单", worldPVPList);
+                                this.getConfig().save();
+                                sender.sendMessage("添加管理员[" + liebiao[2] + "]完成");
+                                return true;
+                            case"del":
+                                if(liebiao.length < 2) {
+                                    sender.sendMessage("请使用/wp admin del <玩家名> 以删除世界保护白名单");
+                                    return false;
+                                }
+                                worldPVPList = this.getConfig().getStringList("世界保护白名单");
+                                worldPVPList.remove(liebiao[2]);
+                                this.getConfig().set("世界保护白名单", worldPVPList);
+                                this.getConfig().save();
+                                sender.sendMessage("删除管理员[" + liebiao[2] + "]完成");
+                        }
+                    case"world":
+                        if(!sender.isOp()) {
+                            String var1 = this.getConfig().get("不是OP提示信息").toString();
+                            sender.sendMessage(var1);
                             return false;
                         }
-                        worldPVPList = this.getConfig().getStringList("世界保护列表");
-                        worldPVPList.add(liebiao[2]);
-                        this.getConfig().set("世界保护白名单", worldPVPList);
-                        this.getConfig().save();
-                        sender.sendMessage("添加保护世界[" + liebiao[2] + "]完成");
-                    }
-                    if(liebiao[1].equals("del")) {
-                        if(liebiao.length < 2) {
-                            sender.sendMessage("请使用/wp world del <world> 以调整世界保护列表");
+                        if(liebiao.length < 1) {
+                            sender.sendMessage("请使用/wp world <add/del> <world> 以添加世界保护列表");
                             return false;
                         }
-                        worldPVPList = this.getConfig().getStringList("世界保护列表");
-                        worldPVPList.remove(liebiao[2]);
-                        this.getConfig().set("世界保护白名单", worldPVPList);
-                        this.getConfig().save();
-                        sender.sendMessage("删除保护世界[" + liebiao[2] + "]完成");
-                    }
-                }
+                        switch (liebiao[1]){
+                            case"add":
+                                if(liebiao.length < 2) {
+                                    sender.sendMessage("请使用/wp world add <world> 以调整世界保护列表");
+                                    return false;
+                                }
+                                worldPVPList = this.getConfig().getStringList("世界保护列表");
+                                worldPVPList.add(liebiao[2]);
+                                this.getConfig().set("世界保护白名单", worldPVPList);
+                                this.getConfig().save();
+                                sender.sendMessage("添加保护世界[" + liebiao[2] + "]完成");
+                            case"del":
+                                if(liebiao.length < 2) {
+                                    sender.sendMessage("请使用/wp world del <world> 以调整世界保护列表");
+                                    return false;
+                                }
+                                worldPVPList = this.getConfig().getStringList("世界保护列表");
+                                worldPVPList.remove(liebiao[2]);
+                                this.getConfig().set("世界保护白名单", worldPVPList);
+                                this.getConfig().save();
+                                sender.sendMessage("删除保护世界[" + liebiao[2] + "]完成");
+                        }
+                        case"pvp":
+                            if(!sender.isOp()) {
+                                String var1 = this.getConfig().get("不是OP提示信息").toString();
+                                sender.sendMessage(var1);
+                                return false;
+                            }
+                            if(liebiao.length < 1) {
+                                sender.sendMessage("请使用/wp pvp <add/del> <world> 以调整PVP世界保护列表");
+                                return false;
+                            }
+                            switch (liebiao[1]){
+                                case"add":
+                                    if(liebiao.length < 2) {
+                                        sender.sendMessage("请使用/wp pvp add <world> 以添加PVP世界保护");
+                                        return false;
+                                    }
+                                    worldPVPList = this.getConfig().getStringList("PVP世界保护列表");
+                                    worldPVPList.add(liebiao[2]);
+                                    this.getConfig().set("PVP世界保护列表", worldPVPList);
+                                    this.getConfig().save();
+                                    sender.sendMessage("添加PVP世界[" + liebiao[2] + "]保护完成");
+                                case"del":
+                                    if(liebiao.length < 2) {
+                                        sender.sendMessage("请使用/wp pvp del <world> 以删除PVP世界保护");
+                                        return false;
+                                    }
 
-                if(zhiling.equals("pvp")) {
-                    if(!sender.isOp()) {
-                        String var1 = this.getConfig().get("不是OP提示信息").toString();
-                        sender.sendMessage(var1);
-                        return false;
-                    }
-                    if(liebiao.length < 1) {
-                        sender.sendMessage("请使用/wp pvp <add/del> <world> 以调整PVP世界保护列表");
-                        return false;
-                    }
-                    if(liebiao[1].equals("add")) {
-                        if(liebiao.length < 2) {
-                            sender.sendMessage("请使用/wp pvp add <world> 以添加PVP世界保护");
+                                    worldPVPList = this.getConfig().getStringList("PVP世界保护列表");
+                                    worldPVPList.remove(liebiao[2]);
+                                    this.getConfig().set("PVP世界保护列表", worldPVPList);
+                                    this.getConfig().save();
+                                    sender.sendMessage("删除PVP世界[" + liebiao[2] + "]保护完成");
+                            }
+                    case"item":
+                        if(!sender.isOp()) {
+                            String var1 = this.getConfig().get("不是OP提示信息").toString();
+                            sender.sendMessage(var1);
                             return false;
                         }
-                        worldPVPList = this.getConfig().getStringList("PVP世界保护列表");
-                        worldPVPList.add(liebiao[2]);
-                        this.getConfig().set("PVP世界保护列表", worldPVPList);
-                        this.getConfig().save();
-                        sender.sendMessage("添加PVP世界[" + liebiao[2] + "]保护完成");
-                    }
-
-                    if(liebiao[1].equals("del")) {
-                        if(liebiao.length < 2) {
-                            sender.sendMessage("请使用/wp pvp del <world> 以删除PVP世界保护");
+                        if(liebiao.length < 1) {
+                            sender.sendMessage("请使用/wp pvp <add/del> <world> 以调整PVP世界保护列表");
                             return false;
                         }
-
-                        worldPVPList = this.getConfig().getStringList("PVP世界保护列表");
-                        worldPVPList.remove(liebiao[2]);
-                        this.getConfig().set("PVP世界保护列表", worldPVPList);
-                        this.getConfig().save();
-                        sender.sendMessage("删除PVP世界[" + liebiao[2] + "]保护完成");
-                    }
+                        switch (liebiao[1]){
+                            case"add":
+                            case"del":
+                        }
                 }
             }
-
-            return true;
         }
+        return true;
     }
 
     @EventHandler
